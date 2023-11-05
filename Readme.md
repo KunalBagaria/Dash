@@ -2,8 +2,6 @@
 
 Dash is a command-line tool designed to streamline the setup of new applications, allowing developers to code more and configure less. With Dash, you can kickstart your projects with predefined configurations, making your development workflow faster and more efficient.
 
-![dash](https://github.com/KunalBagaria/Dash/assets/61944452/2a0da7ca-89d2-432e-b214-f9fdd5624476)
-
 
 ## Features
 
