@@ -1,5 +1,7 @@
 [package]
 name = "dash-create"
+description = "Code More, Configure Less: The Smart Way to Start Your Projects."
+license-file = "LICENSE"
 version = "1.0.0"
 authors = ["Kunal Bagaria <kb24x7@gmail.com>"]
 edition = "2021"
