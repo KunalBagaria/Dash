@@ -4,7 +4,7 @@ Dash is a CLI tool that rapidly sets up new projects using one command, pre-conf
 
 ## Features
 
-- Quick Initialization: Initialize the configuration file with `dash init`.
+- Quick Initialization: Initialize the config file with current directory as working directory with `dash init`.
 - Configuration Management: Open and edit your project configurations with `dash config`.
 - Project Creation: Create new projects with custom predefined setups using `dash create <alias> <project name>`.
 
