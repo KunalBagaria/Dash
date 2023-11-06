@@ -1,8 +1,8 @@
-use serde_json;
 use serde::{Deserialize, Serialize};
-use std::{fs, path::PathBuf};
-use std::io::{BufReader, BufRead};
+use serde_json;
+use std::io::{BufRead, BufReader};
 use std::process::{Command as SystemCommand, Stdio};
+use std::{fs, path::Path, path::PathBuf};
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
@@ -109,6 +109,19 @@ pub fn create_project(alias: &str, project_name: &str) {
             }
         }
         println!("Project '{}' created successfully.", project_name);
+        let project_path = Path::new(&config.working_directory).join(project_name);
+        let vscode_command = format!("code {}", project_path.to_str().unwrap());
+        println!("Opening project in VSCode: {}", vscode_command);
+        if let Err(e) = SystemCommand::new("sh")
+            .arg("-c")
+            .arg(&vscode_command)
+            .spawn()
+            .and_then(|mut child| child.wait())
+        {
+            eprintln!("Error opening project in VSCode: {}", e);
+        } else {
+            println!("Project '{}' opened in VSCode successfully.", project_name);
+        }
     } else {
         eprintln!("Alias '{}' not found in configuration.", alias);
     }
