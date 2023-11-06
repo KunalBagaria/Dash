@@ -1,7 +1,8 @@
-use serde::{Deserialize, Serialize};
 use serde_json;
-use std::process::Command as SystemCommand;
+use serde::{Deserialize, Serialize};
 use std::{fs, path::PathBuf};
+use std::io::{BufReader, BufRead};
+use std::process::{Command as SystemCommand, Stdio};
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
@@ -19,9 +20,9 @@ pub fn init_config() {
 
     // Adding default next-app configuration
     default_configs.insert("next-app".to_string(), vec![
-    "yarn create next-app <project name> --ts --eslint --src-dir --use-yarn --no-tailwind --no-app --import-alias '@/*'".to_string(),
-    "yarn add sass".to_string()
-  ]);
+      "yarn create next-app <project name> --ts --eslint --src-dir --use-yarn --no-tailwind --no-app --import-alias '@/*'".to_string(),
+      "yarn add sass".to_string()
+    ]);
 
     let config = Config {
         working_directory: std::env::current_dir()
@@ -70,26 +71,36 @@ pub fn create_project(alias: &str, project_name: &str) {
             let full_command = command.replace("<project name>", project_name);
             println!("Executing: {}", full_command);
 
-            let output = SystemCommand::new("sh")
+            let process = SystemCommand::new("sh")
                 .arg("-c")
                 .arg(&full_command)
                 .current_dir(&config.working_directory)
-                .output();
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
+                .spawn();
 
-            match output {
-                Ok(output) => {
-                    if !output.status.success() {
+            match process {
+                Ok(mut child) => {
+                    let stdout = child.stdout.take().expect("Failed to open stdout");
+                    let stderr = child.stderr.take().expect("Failed to open stderr");
+
+                    let stdout_reader = BufReader::new(stdout);
+                    let stderr_reader = BufReader::new(stderr);
+
+                    stdout_reader
+                        .lines()
+                        .filter_map(|line| line.ok())
+                        .for_each(|line| println!("{}", line));
+
+                    stderr_reader
+                        .lines()
+                        .filter_map(|line| line.ok())
+                        .for_each(|line| eprintln!("{}", line));
+
+                    if !child.wait().expect("Failed to wait on child").success() {
                         eprintln!("Failed to execute command: {}", full_command);
-                        eprintln!(
-                            "Command output: {}",
-                            String::from_utf8_lossy(&output.stderr)
-                        );
                         return;
                     }
-                    println!(
-                        "Command output: {}",
-                        String::from_utf8_lossy(&output.stdout)
-                    );
                 }
                 Err(e) => {
                     eprintln!("Error executing command: {}", e);
