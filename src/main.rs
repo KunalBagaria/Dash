@@ -5,7 +5,7 @@ use commands::{create_project, init_config, open_config, ASCII_ART};
 
 fn main() {
     let matches = Command::new("Dash")
-        .version("1.1.2")
+        .version("1.1.3")
         .author("Kunal Bagaria")
         .about("Code More, Configure Less: The Smart Way to Start Your Projects.")
         .subcommand(Command::new("init").about("Initializes the Dash configuration"))

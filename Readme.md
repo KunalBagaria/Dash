@@ -1,6 +1,6 @@
 # Dash
 
-Dash is a CLI tool that rapidly sets up new projects by running a series of commands pre-defined by you.
+Dash is a CLI tool that rapidly sets up new projects by running a series of pre-defined commands.
 
 ![ray-so-export (2)](https://github.com/KunalBagaria/Dash/assets/61944452/93151871-0833-4b44-adb5-23928e5395f7)
 
